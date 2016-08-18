@@ -41,3 +41,7 @@ Can contain helpful extras to aid in management of the machine such as an easy w
 From the Vagrant website:
 
 > Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team.
+
+## Resources
+
+A list of other useful tools or references for your projects.
