@@ -20,6 +20,10 @@ Depending on your IDE you may need to install a plugin for to apply the defined 
 - Eclipse: Plugin - https://marketplace.eclipse.org/content/editorconfig-eclipse
 - Others?
 
+## git
+
+Some useful generic ```.gitignore``` and ```.gitattributes``` files, primarily for web projects.
+
 ## Ansible
 
 Contains Ansible playbooks that can be used either in conjunction with the Vagrant boxes in this repo, or to provision remote servers.
