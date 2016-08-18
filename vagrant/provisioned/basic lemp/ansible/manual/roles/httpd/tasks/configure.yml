@@ -1,0 +1,16 @@
+
+- name: Change default apache vhost
+  sudo: yes
+  template: src=default.tpl dest=/etc/apache2/sites-enabled/000-default.conf
+
+- name: Set global ServerName for apache config
+  sudo: yes
+  lineinfile: dest=/etc/apache2/apache2.conf line="ServerName localhost"
+
+#- name: SELinux to enforcing
+#  command: /sbin/setenforce 0
+#  notify:
+#    - restart httpd
+
+- name: Ensure Apache running
+  service: name=apache2 state=started enabled=yes

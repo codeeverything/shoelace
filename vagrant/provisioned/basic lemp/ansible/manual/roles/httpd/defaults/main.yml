@@ -1,0 +1,5 @@
+---
+
+# used in apache vhost configuration files
+doc_root: /vagrant
+hostname: vagrantbox

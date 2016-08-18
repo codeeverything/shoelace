@@ -1,0 +1,1 @@
+# Minial Basic Ubuntu Trusty 64 Vagrant Machine
