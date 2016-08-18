@@ -1,5 +1,0 @@
-- name: Install Apache web server
-  apt: name={{ item }} state=installed update_cache=yes
-  sudo: yes
-  with_items:
-     - apache2

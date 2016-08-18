@@ -1,6 +1,6 @@
 # shoelace
 
-A set of configs and such to help bootstrap projects
+A set of configs and such to help bootstrap projects. Below is a summary of each section of the repo, each has it's own ```README.md``` with more detail.
 
 ## editorconfig
 
@@ -10,7 +10,7 @@ From the ```www.editorconfig.org``` website:
 
 ### Usage
 
-Copy the ```.editorconfig``` file into your projects route folder.
+Copy the ```.editorconfig``` file into your projects root folder.
 
 Depending on your IDE you may need to install a plugin for to apply the defined configuration:
 
