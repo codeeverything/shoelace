@@ -1,6 +1,6 @@
 # shoelace
 
-A set of configs and such to help bootstrap projects. Below is a summary of each section of the repo, each has it's own ```README.md``` with more detail.
+A set of configs and such to help bootstrap your (PHP/Javascript, for now), projects. Below is a summary of each section of the repo, each has it's own ```README.md``` with more detail.
 
 ## editorconfig
 
