@@ -15,9 +15,10 @@ Copy the ```.editorconfig``` file into your projects route folder.
 Depending on your IDE you may need to install a plugin for to apply the defined configuration:
 
 - PHPStorm: Baked in support
-- Sublime: Plugin - HERE
-- Eclipse?
-- Others
+- Sublime: Plugin - https://github.com/sindresorhus/editorconfig-sublime
+- Atom: Plugin - https://atom.io/packages/editorconfig
+- Eclipse: Plugin - https://marketplace.eclipse.org/content/editorconfig-eclipse
+- Others?
 
 ## Ansible
 
