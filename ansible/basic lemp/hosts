@@ -1,1 +1,2 @@
-192.168.33.21 ansible_ssh_pass=vagrant ansible_ssh_user=vagrant
+# This is an Ansible inventory file. Add your hosts here, or see the link below for more detail
+# http://docs.ansible.com/ansible/intro_inventory.html
