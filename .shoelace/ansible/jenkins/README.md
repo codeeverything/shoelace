@@ -1,1 +1,0 @@
-# Setup a vanilla Jenkins CI machine (with Ansible)
