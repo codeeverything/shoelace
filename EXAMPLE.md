@@ -4,7 +4,7 @@ Let's take a look at how to setup a simple project and get going.
 
 We'll setup a Vagrant LEMP box with Ansible, add a ```.editorconfig``` file and create a fresh Laravel project.
 
-- Create a project for Shoelace and clone the repo here
+- Create a project for Shoelace and clone the repo here (only needs to be done once)
 - Create your project folder
 - Copy the ```shoelace.sh``` file from the root of Shoelace
 - Copy the contents of ```vagrant/provisioned/basic lemp``` to your project root
