@@ -1,3 +1,4 @@
-# Installs PHP specific extras for Jenkins CI (with Ansible)
+# Installs Jenkins CI (with Ansible) with extras for PHP and Javascript Dev.
 
-Assumes you've already run the ```jenkins``` provisioner in this repo.
+
+

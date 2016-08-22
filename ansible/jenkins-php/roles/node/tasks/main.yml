@@ -1,0 +1,83 @@
+---
+- name: 'Install dependencies'
+  tags: 'nodejs'
+  become: 'yes'
+  become_method: 'sudo'
+  apt: >
+    pkg={{ item }}
+    update-cache=yes
+  with_items:
+    - 'git'
+    - 'build-essential'
+    - 'curl'
+
+- name: 'Add Node.js PPA'
+  tags: 'nodejs'
+  become: 'yes'
+  become_method: 'sudo'
+  shell: "curl --silent --location https://deb.nodesource.com/setup_{{ nodejs_major_version }}.{{ nodejs_minor_version }} | bash -"
+
+- name: 'Install Node.js'
+  tags: 'nodejs'
+  become: 'yes'
+  become_method: 'sudo'
+  apt: >
+    pkg=nodejs
+
+- name: 'Update npm'
+  tags:
+    - 'nodejs'
+    - 'npm'
+  become: 'yes'
+  become_method: 'sudo'
+  npm: >
+    name=npm
+    state=latest
+    global=yes
+    registry=https://registry.npmjs.org
+  when: 'nodejs_update_npm | bool'
+
+- name: 'Install npm global packages'
+  tags:
+    - 'nodejs'
+    - 'npm'
+  become: 'yes'
+  become_method: 'sudo'
+  npm: >
+    name={{ item }}
+    state=present
+    global=yes
+    registry=http://registry.npmjs.org
+  with_items: '{{ nodejs_global_packages }}'
+
+- name: 'Install local npm packages'
+  tags:
+    - 'nodejs'
+    - 'npm'
+  npm: 'path={{ nodejs_app_root }}'
+  when: 'nodejs_app_root is defined'
+
+- name: 'Ensure bower is installed'
+  tags:
+    - 'nodejs'
+    - 'bower'
+  become: 'yes'
+  become_method: 'sudo'
+  npm: >
+    name=bower
+    state=present
+    global=yes
+    registry=https://registry.npmjs.org
+  when:
+    - 'nodejs_do_bower_install | bool'
+    - 'nodejs_app_root is defined'
+
+- name: 'Install local bower packages'
+  tags:
+    - 'nodejs'
+    - 'bower'
+  remote_user: '{{ nodejs_user }}'
+  command: 'bower install chdir={{ nodejs_app_root }}'
+  when:
+    - 'nodejs_do_bower_install | bool'
+    - 'nodejs_app_root is defined'

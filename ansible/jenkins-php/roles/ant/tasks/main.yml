@@ -1,0 +1,5 @@
+---
+- name: Install Apache Ant
+  action: apt pkg={{ item }} update_cache=yes force=yes state=latest
+  with_items:
+        - ant
