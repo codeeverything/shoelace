@@ -1,6 +1,7 @@
 <?php
 
 // `shoelace init --vagrant=basic-ubuntu --provision=[ansible|puppet|chef]/basic-lamp --editorconfig[=specific]`
+// 192.168.33.21/src/packager.php?vagrant=basic-ubuntu&provision=ansible/basic-lamp&editorconfig=
 
 // let's hack this out
 $vagrant = $_GET['vagrant'];
@@ -36,7 +37,13 @@ if ($vagrant) {
         $sourceDir .= 'basic/' . $vagrant;
     }
 
-    addFilesToZip($sourceDir, '/', $zip);
+    //echo $sourceDir;
+    //var_dump(file_exists($sourceDir));
+    //die();
+
+    if (file_exists($sourceDir)) {
+        addFilesToZip($sourceDir, '/', $zip);
+    }
 }
 
 if ($canProvision) {
@@ -44,7 +51,13 @@ if ($canProvision) {
     $system = $prov[0];
     $flavour = $prov[1];
 
-    addFilesToZip($packageRoot . "/$system/$flavour", '.shoelace/' . $system, $zip);
+
+    if ($prov) {
+        $sourceDir = $packageRoot . "/$system/$flavour";
+        if (file_exists($sourceDir)) {
+            addFilesToZip($sourceDir, '.shoelace/' . $system, $zip);
+        }
+    }
 }
 
 if (isset($editorconfig)) {
@@ -64,6 +77,7 @@ header('Content-Length: ' . filesize($filename));
 header('Content-Disposition: attachment; filename="package.zip"');
 readfile($filename);
 unlink($filename);
+
 
 /**
  * Given a source directory, recursively add all files (and sub dirs), to the ZIP
