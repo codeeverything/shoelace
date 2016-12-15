@@ -17,7 +17,7 @@ Provisioners are installed to and run on the VM, so you don't need these locally
 
 Download the command line tool for either Windows or Mac and place it in a path that's globally accesible from your terminal (add it if you need to).
 
-Set a new environment variable of `SHOCELACE_SERVER` and set this to `http://shoelace.codeeverything.com/src/` - this is the default package server, you can host your own if you like (see below).
+Set a new environment variable of `SHOELACE_SERVER` and set this to `http://shoelace.codeeverything.com/src/` - this is the default package server, you can host your own if you like (see below).
 
 ### Initialising a project
 
@@ -33,6 +33,9 @@ The `init` command is the only one currently available and takes the following (
 - `--provision`: A string with format `PROVISIONER/CONFIG`, for example `ansible/basic-lamp`. This tells Shoelace to get the Vagrant machine above which is configured to provision with the provisioner and give that provisioner the config to achieve the setup you need.
 - `--editorconfig`: Currently a boolean flag. If included a sensible `.editorconfig` file will be included#
 - `--git`: Currently a boolean flag. If included a sensible set of example `.gitignore` and `.gitattributes` files will be included in the package. To make use of these be sure to remove the extension from the file(s).
+- `--github`: Currently a boolean flag. Include useful files for Github, e.g. a Pull Request template
+
+**NB: A `README.md` is always included.**
 
 Let's try another example:
 

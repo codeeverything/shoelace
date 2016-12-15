@@ -18,6 +18,7 @@ func main() {
     var provision string
     var editorconfig bool
     var git bool
+    var github bool
 
     // read in the source server (i.e. where to get packages from). Expect to be in an environment variable
     var sourceServer string
@@ -59,13 +60,18 @@ func main() {
                     Usage: "Whether to include sample .gitignore and .gitattributes files or not",
                     Destination: &git,
                 },
+                cli.BoolFlag{
+                    Name:  "github",
+                    Usage: "Whether to include Github files (pull request template)",
+                    Destination: &github,
+                },
             },
             // define tha actual work to do when "init" is used
             Action:  func(c *cli.Context) error {
                 var url string;
 
                 // build the URL to the package server and pass arguments
-                url = fmt.Sprintf("%spackager.php?vagrant=%s&provision=%s&editorconfig=%t&git=%t", sourceServer, vagrant, provision, editorconfig, git)
+                url = fmt.Sprintf("%spackager.php?vagrant=%s&provision=%s&editorconfig=%t&git=%t&github=%t", sourceServer, vagrant, provision, editorconfig, git, github)
                 fmt.Println(url)
 
                 // make the HTTP request to the URL (just an HTTP GET request)

@@ -8,6 +8,7 @@ $vagrant = $_GET['vagrant'];
 $provisioner = $_GET['provision'];
 $editorconfig = $_GET['editorconfig'];
 $git = $_GET['git'];
+$github = $_GET['github'];
 
 $zip = new ZipArchive();
 $filename = "./build" . time() . rand(0, 1000) . ".zip";
@@ -76,6 +77,13 @@ if ($editorconfig == 'true') {
 if ($git == 'true') {
     addFilesToZip($packageRoot . '/git', '/', $zip);
 }
+
+if ($github == 'true') {
+    addFilesToZip($packageRoot . '/github', '.github/', $zip);
+}
+
+// always include a README file
+addFilesToZip($packageRoot . '/README', '/', $zip);
 
 $zip->close();
 
