@@ -10,22 +10,23 @@ import (
     "github.com/urfave/cli"
 )
 
+// Uses Go CLI package - please see here for documentation: https://github.com/urfave/cli
+
 func main() {
     // set some variables
     var vagrant string
     var provision string
     var editorconfig bool
 
+    // read in the source server (i.e. where to get packages from). Expect to be in an environment variable
     var sourceServer string
     sourceServer = os.Getenv("SHOELACE_SERVER")
 
-    fmt.Println(sourceServer)
-
+    // if we don't have a server then error and bail
     if sourceServer == "" {
         fmt.Println("No SHOELACE_SERVER environment variable found, please add one and run shoelace again")
         return
     }
-
 
     // create a new CLI app
     app := cli.NewApp()
@@ -35,12 +36,12 @@ func main() {
         {
             Name: "init",
             Usage: "Initialise a project with given settings",
-            // define flags that the "init" command can use
+            // define flags that the "init" command can use. E.g. shoelace init --flag1=foo --flag2=bar
             Flags: []cli.Flag{
                 cli.StringFlag{
                     Name: "vagrant",
                     Usage: "The Vagrant machine to use",
-                    Destination: &vagrant,
+                    Destination: &vagrant,  // the variable to pop this value in
                 },
                 cli.StringFlag{
                     Name: "provision",
@@ -56,23 +57,35 @@ func main() {
             // define tha actual work to do when "init" is used
             Action:  func(c *cli.Context) error {
                 var url string;
+
+                // build the URL to the package server and pass arguments
                 url = fmt.Sprintf("%spackager.php?vagrant=%s&provision=%s&editorconfig=%t", sourceServer, vagrant, provision, editorconfig)
                 fmt.Println(url)
 
+                // make the HTTP request to the URL (just an HTTP GET request)
                 response, err := http.Get(url)
+
                 if err != nil {
-                    //log.Fatal(err)
+                    // if there was an error handle it (or not)
                 } else {
+                    // once we're done with the response body close it
                     defer response.Body.Close()
+
+                    // create a file to store the response from the package server
                     out, err := os.Create("filename.zip")
                     if err != nil {
+                        // handle file creation error
                         // panic?
                     }
+
+                    // defer closing the output file until the function we're in has completed
                     defer out.Close()
+
+                    // set the content of the output file with the response from the package server
                     io.Copy(out, response.Body)
 
+                    // unzip the file we got into the current directory
                     status := Unzip("filename.zip", "")
-                    fmt.Println(status)
                 }
 
                 return nil
@@ -80,15 +93,18 @@ func main() {
         },
     }
 
+    // when the command(s) above have completed, remove the downloaded package from the client
     defer func () {
         os.Remove("filename.zip");
     }()
 
+    // run the CLI app
     app.Run(os.Args)
 }
 
 /*
-
+    Unzip the file in src to dest
+    @see: http://stackoverflow.com/questions/20357223/easy-way-to-unzip-file-with-golang
  */
 func Unzip(src, dest string) error {
     r, err := zip.OpenReader(src)
