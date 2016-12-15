@@ -24,8 +24,6 @@ if ($vagrant) {
     $destDir = '';
 
     if ($provisioner) {
-        $canProvision = true;
-
         $prov = explode('/', $provisioner);
         $system = $prov[0];
         $flavour = $prov[1];
@@ -42,6 +40,10 @@ if ($vagrant) {
     //die();
 
     if (file_exists($sourceDir)) {
+        if ($prov) {
+            $canProvision = true;
+        }
+
         addFilesToZip($sourceDir, '/', $zip);
     }
 }
@@ -60,10 +62,10 @@ if ($canProvision) {
     }
 }
 
-if (isset($editorconfig)) {
-    if ($editorconfig == '') {
+if ($editorconfig == 'true') {
+    //if ($editorconfig == '') {
         $editorconfig = 'default/.editorconfig';
-    }
+    //}
 
     //var_dump($editorconfig);
 

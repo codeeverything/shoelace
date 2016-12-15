@@ -18,51 +18,62 @@ import (
 func main() {
   var vagrant string
   var provision string
-  var editorconfig string
+  var editorconfig bool
 
   app := cli.NewApp()
 
-  app.Flags = []cli.Flag{
-    cli.StringFlag{
-      Name:  "vagrant",
-      Usage: "The Vagrant machine to use",
-      Destination: &vagrant,
-    },
-    cli.StringFlag{
-      Name:  "provision",
-      Usage: "The provisioner to use. TOOL/CONFIG, e.g. ansible/lamp",
-      Destination: &provision,
-    },
-    cli.StringFlag{
-      Name:  "editorconfig",
-      Usage: "Whether to include the .editorconfig or not",
-      Destination: &editorconfig,
-    },
-  }
+  app.Commands = []cli.Command{
+      {
+        Name:    "init",
+        Usage:   "Initialise a project with given settings",
+        Flags: []cli.Flag{
+            cli.StringFlag{
+              Name:  "vagrant",
+              Usage: "The Vagrant machine to use",
+              Destination: &vagrant,
+            },
+            cli.StringFlag{
+              Name:  "provision",
+              Usage: "The provisioner to use. TOOL/CONFIG, e.g. ansible/lamp",
+              Destination: &provision,
+            },
+            cli.BoolFlag{
+              Name:  "editorconfig",
+              Usage: "Whether to include the .editorconfig or not",
+              Destination: &editorconfig,
+            },
+          },
+        Action:  func(c *cli.Context) error {
+          var url string;
+              url = fmt.Sprintf("http://192.168.33.21/src/packager.php?vagrant=%s&provision=%s&editorconfig=%t", vagrant, provision, editorconfig)
+              fmt.Println(url)
 
-  app.Action = func(c *cli.Context) error {
-    var url string;
-    url = fmt.Sprintf("http://192.168.33.21/src/packager.php?vagrant=%s&provision=%s&editorconfig=%s", vagrant, provision, editorconfig)
-    fmt.Println(url)
-
-    response, err := http.Get(url)
-        if err != nil {
-                //log.Fatal(err)
-        } else {
-                defer response.Body.Close()
-                out, err := os.Create("filename.zip")
+              response, err := http.Get(url)
                   if err != nil {
-                    // panic?
+                          //log.Fatal(err)
+                  } else {
+                          defer response.Body.Close()
+                          out, err := os.Create("filename.zip")
+                            if err != nil {
+                              // panic?
+                            }
+                            defer out.Close()
+                            io.Copy(out, response.Body)
+
+                            status := Unzip("filename.zip", "")
+                            fmt.Println(status)
                   }
-                  defer out.Close()
-                  io.Copy(out, response.Body)
 
-                  status := Unzip("filename.zip", "tmp")
-                  fmt.Println(status)
-        }
-
-    return nil
+              return nil
+        },
+      },
   }
+
+
+
+  defer func () {
+    os.Remove("filename.zip");
+  }()
 
   app.Run(os.Args)
 
