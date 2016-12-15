@@ -1,6 +1,26 @@
 <?php
 
+/**
+ * This does the heavy lifting on the server side.
+ *
+ * It takes in details of the packages the user would like and returns a ZIP file containing
+ * all the required files, in the correct directory structure.
+ *
+ * It also takes care of any relationship between the packages. For example, Vagrant without
+ * provisioning should pull different a Vagrantfile to that with provisioning, and the
+ * provisioner being used will also affect what is delivered.
+ *
+ * The same might be true for other config files. For example the editorconfig or gitignore
+ * for a LAMP stack vs a Node stack might well differ.
+ *
+ * Differentiation is currently handled simply by splitting source files into different directories,
+ * plus some small logic within. However this could be extended to "build" outputs with less
+ * directories and possible duplication of common files/sections.
+ *
+ */
+
 // `shoelace init --vagrant=basic-ubuntu --provision=[ansible|puppet|chef]/basic-lamp --editorconfig[=specific]`
+// `shoelace init --box=[vagrant|ec2]/basic-ubuntu --provision=[ansible|puppet|chef]/basic-lamp --editorconfig[=specific]`
 // 192.168.33.21/src/packager.php?vagrant=basic-ubuntu&provision=ansible/basic-lamp&editorconfig=
 
 // let's hack this out
