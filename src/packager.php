@@ -24,10 +24,12 @@ if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
 //echo "status:" . $zip->status . "\n";
 //$zip->close();
 
+$packageRoot = '../packages';
+
 $canProvision = false;
 if ($vagrant) {
 
-    $sourceDir = '../vagrant/';
+    $sourceDir = $packageRoot . '/vagrant/';
     $destDir = '';
 
     if ($provisioner) {
@@ -52,7 +54,7 @@ if ($canProvision) {
     $system = $prov[0];
     $flavour = $prov[1];
 
-    addFilesToZip("../$system/$flavour", '.shoelace/' . $system, $zip);
+    addFilesToZip($packageRoot . "/$system/$flavour", '.shoelace/' . $system, $zip);
 }
 
 if (isset($editorconfig)) {
@@ -62,11 +64,19 @@ if (isset($editorconfig)) {
 
     var_dump($editorconfig);
 
-    addFilesToZip('../editorconfig', '/', $zip);
+    addFilesToZip($packageRoot . '/editorconfig', '/', $zip);
 }
 
 $zip->close();
 
+/**
+ * Given a source directory, recursively add all files (and sub dirs), to the ZIP
+ * file in the destination directory
+ *
+ * @param $src
+ * @param $dest
+ * @param $zipfile
+ */
 function addFilesToZip($src, $dest, &$zipfile) {
     //echo "../" . $src;
     $dir = opendir($src);
