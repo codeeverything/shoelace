@@ -1,0 +1,15 @@
+---
+- name: Add NodeSource repositories for Node.js.
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/setup"
+    state: present
+  register: node_repo
+
+- name: Install NodeJS
+  sudo: yes
+  apt: pkg=nodejs state=latest
+  when: node_repo
+
+- name: Install Build Essentials for NPM
+  sudo: yes
+  apt: pkg=build-essential state=latest

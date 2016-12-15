@@ -1,0 +1,2 @@
+vagrant/ubuntu=vagrant/basic
+vagrant/ubuntu@provisioned=vagrant/provisioned/basic-ubuntu

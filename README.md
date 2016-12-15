@@ -1,52 +1,68 @@
 # shoelace
 
-A set of configs and such to help bootstrap your (PHP/Javascript, for now), projects. Below is a summary of each section of the repo, each has it's own ```README.md``` with more detail.
+Shoelace is a command line tool, backed by a hosted set of packages, to help you get your project environment off the ground quickly and consistently.
 
-## editorconfig
+It values repeatable, consistent development environments and leverages Vagrant and server provisioning tools like Ansible to help achieve this.
 
-From the ```www.editorconfig.org``` website:
+Shoelace aims to provide generic but useful starting points for the configurations it provides in packages, so don't be shy about making changes once you have the package in your project!
 
-> EditorConfig helps developers define and maintain consistent coding styles between different editors and IDEs. The EditorConfig project consists of a file format for defining coding styles and a collection of text editor plugins that enable editors to read the file format and adhere to defined styles. EditorConfig files are easily readable and they work nicely with version control systems.
+### Requirements
 
-### Usage
+- Vagrant
+- A server with PHP 5, if hosting packages yourself
 
-Copy the ```.editorconfig``` file into your projects root folder.
+Provisioners are installed to and run on the VM, so you don't need these locally (if using a Vagrant VM at least).
 
-Depending on your IDE you may need to install a plugin for to apply the defined configuration:
+### Installation
 
-- PHPStorm: Baked in support
-- Sublime: Plugin - https://github.com/sindresorhus/editorconfig-sublime
-- Atom: Plugin - https://atom.io/packages/editorconfig
-- Eclipse: Plugin - https://marketplace.eclipse.org/content/editorconfig-eclipse
-- Others?
+Download the command line tool for either Windows or Mac and place it in a path that's globally accesible from your terminal (add it if you need to).
 
-## git
+Set a new environment variable of `SHOELACE_SERVER` and set this to `http://shoelace.codeeverything.com/src/` - this is the default package server, you can host your own if you like (see below).
 
-Some useful generic ```.gitignore``` and ```.gitattributes``` files, primarily for web projects.
+### Initialising a project
 
-## Ansible
+Let's start with an example that will generate everything we need to add:
+- A Vagrant machine running Ubuntu Trusty
+- An Ansible playbook to provision LAMP on that machine
+- An .editorconfig file with some sensible defaults for common file type
 
-Contains Ansible playbooks that can be used either in conjunction with the Vagrant boxes in this repo, or to provision remote servers.
+`shoelace init --vagrant=trusty --provision=ansible/basic-lamp --editorconfig`
 
-From the Ansible website:
+The `init` command is the only one currently available and takes the following (optional) arguments:
+- `--vagrant`: The name of the Vagrant machine to use
+- `--provision`: A string with format `PROVISIONER/CONFIG`, for example `ansible/basic-lamp`. This tells Shoelace to get the Vagrant machine above which is configured to provision with the provisioner and give that provisioner the config to achieve the setup you need.
+- `--editorconfig`: Currently a boolean flag. If included a sensible `.editorconfig` file will be included#
+- `--git`: Currently a boolean flag. If included a sensible set of example `.gitignore` and `.gitattributes` files will be included in the package. To make use of these be sure to remove the extension from the file(s).
+- `--github`: Currently a boolean flag. Include useful files for Github, e.g. a Pull Request template
 
-> Ansible seamlessly unites workflow orchestration with configuration management, provisioning, and application deployment in one easy-to-use and deploy platform.
-> Regardless of where you start with Ansible, you'll find our simple, powerful and agentless automation platform has the capabilities to solve your most challenging problems.
+**NB: A `README.md` is always included.**
 
-## IDE Settings
+Let's try another example:
 
-Exports of IDE settings for specific project types to get you up and running with the minimum of fuss. For example providing configuration of remote debugging with a Vagrant box, or integration with PHP Code Sniffer/PHPUnit running remotely.
+`shoelace init --vagrant=trusty`
 
-## Vagrant
+This will give us a `Vagrantfile` for Ubuntu Trusty and nothing else.
 
-Vagrant boxes with some useful additions. Can be basic raw boxes or boxes with attached provisioner(s).
+`shoelace init --editorconfig`
 
-Can contain helpful extras to aid in management of the machine such as an easy way of starting and stopping ```xdebug```, or carrying out project specific provisioning/setup tasks.
+Perhaps we don't need any VM for this project, but we do want a shared Editor Config for all developers.
 
-From the Vagrant website:
+`shoelace init --provision=ansible/basic-lamp --editorconfig`
 
-> Vagrant provides easy to configure, reproducible, and portable work environments built on top of industry-standard technology and controlled by a single consistent workflow to help maximize the productivity and flexibility of you and your team.
+Here we don't have a VM again, but do include the editor config and provisioning scripts for use against whatever infrastructure the project will use.
 
-## Resources
+#### File location
 
-A list of other useful tools or references for your projects.
+Where a file from a package ends up depends on where it needs to be to do it's job. For example, `Vagrantfile`(s) will find themselves in the project root (or whereever you ran the `shoelace init` from), as will `.editorconfig` and Git files. Ansible playbooks and their configuration, however, will be placed in the `.shoelace` directory off your project root (again, whereever you ran `shoelace init` from). These files are referenced by other tools and can be more hidden away.
+
+### Hosting packages and customisation
+
+You can host packages and extend the default offering to include your own configs quite simply by:
+- Forking the Shoelace repo
+- Cloning this to your own server in a web servable directory
+  - This must be running PHP 5 for the packager to work
+- Have devs. change their `SHOELACE_SERVER` environment variable to point at your server. This should include enough of a path to resolve `/packager.php`
+
+### Notes
+
+- `shoelace init` is not (currently), intended to be re-runnable with adverse effets. It's expected to be run once at the start of a project before anything else. Please reuse with care!

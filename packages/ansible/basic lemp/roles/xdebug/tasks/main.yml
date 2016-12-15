@@ -1,0 +1,9 @@
+---
+- name: Install xDebug
+  sudo: yes
+  apt: pkg=php5-xdebug state=latest
+
+- name: Configure XDebug
+  sudo: yes
+  template: src=xdebug.tpl dest=/etc/php5/fpm/conf.d/20-xdebug.ini
+  notify: restart php5-fpm
