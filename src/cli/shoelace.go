@@ -1,85 +1,95 @@
 package main
 
 import (
-	"fmt"
-	"io"
-	"os"
-	//"net"
-	"net/http"
-	//"time"
-	"archive/zip"
+    "fmt"
+    "io"
+    "os"
+    "net/http"
+    "archive/zip"
     "path/filepath"
-    //"strings"
     "github.com/urfave/cli"
 )
 
-// http://192.168.33.21/src/packager.php?vagrant=basic-ubuntu&provision=ansible/basic-lamp&editorconfig=
-
 func main() {
-  var vagrant string
-  var provision string
-  var editorconfig bool
+    // set some variables
+    var vagrant string
+    var provision string
+    var editorconfig bool
 
-  app := cli.NewApp()
+    var sourceServer string
+    sourceServer = os.Getenv("SHOELACE_SERVER")
 
-  app.Commands = []cli.Command{
-      {
-        Name:    "init",
-        Usage:   "Initialise a project with given settings",
-        Flags: []cli.Flag{
-            cli.StringFlag{
-              Name:  "vagrant",
-              Usage: "The Vagrant machine to use",
-              Destination: &vagrant,
+    fmt.Println(sourceServer)
+
+    if sourceServer == "" {
+        fmt.Println("No SHOELACE_SERVER environment variable found, please add one and run shoelace again")
+        return
+    }
+
+
+    // create a new CLI app
+    app := cli.NewApp()
+
+    // add command(s) to the CLI app
+    app.Commands = []cli.Command{
+        {
+            Name: "init",
+            Usage: "Initialise a project with given settings",
+            // define flags that the "init" command can use
+            Flags: []cli.Flag{
+                cli.StringFlag{
+                    Name: "vagrant",
+                    Usage: "The Vagrant machine to use",
+                    Destination: &vagrant,
+                },
+                cli.StringFlag{
+                    Name: "provision",
+                    Usage: "The provisioner to use. TOOL/CONFIG, e.g. ansible/lamp",
+                    Destination: &provision,
+                },
+                cli.BoolFlag{
+                    Name:  "editorconfig",
+                    Usage: "Whether to include the .editorconfig or not",
+                    Destination: &editorconfig,
+                },
             },
-            cli.StringFlag{
-              Name:  "provision",
-              Usage: "The provisioner to use. TOOL/CONFIG, e.g. ansible/lamp",
-              Destination: &provision,
+            // define tha actual work to do when "init" is used
+            Action:  func(c *cli.Context) error {
+                var url string;
+                url = fmt.Sprintf("%spackager.php?vagrant=%s&provision=%s&editorconfig=%t", sourceServer, vagrant, provision, editorconfig)
+                fmt.Println(url)
+
+                response, err := http.Get(url)
+                if err != nil {
+                    //log.Fatal(err)
+                } else {
+                    defer response.Body.Close()
+                    out, err := os.Create("filename.zip")
+                    if err != nil {
+                        // panic?
+                    }
+                    defer out.Close()
+                    io.Copy(out, response.Body)
+
+                    status := Unzip("filename.zip", "")
+                    fmt.Println(status)
+                }
+
+                return nil
             },
-            cli.BoolFlag{
-              Name:  "editorconfig",
-              Usage: "Whether to include the .editorconfig or not",
-              Destination: &editorconfig,
-            },
-          },
-        Action:  func(c *cli.Context) error {
-          var url string;
-              url = fmt.Sprintf("http://192.168.33.21/src/packager.php?vagrant=%s&provision=%s&editorconfig=%t", vagrant, provision, editorconfig)
-              fmt.Println(url)
-
-              response, err := http.Get(url)
-                  if err != nil {
-                          //log.Fatal(err)
-                  } else {
-                          defer response.Body.Close()
-                          out, err := os.Create("filename.zip")
-                            if err != nil {
-                              // panic?
-                            }
-                            defer out.Close()
-                            io.Copy(out, response.Body)
-
-                            status := Unzip("filename.zip", "")
-                            fmt.Println(status)
-                  }
-
-              return nil
         },
-      },
-  }
+    }
 
+    defer func () {
+        os.Remove("filename.zip");
+    }()
 
-
-  defer func () {
-    os.Remove("filename.zip");
-  }()
-
-  app.Run(os.Args)
-
-
+    app.Run(os.Args)
 }
 
+/*
+
+ */
 func Unzip(src, dest string) error {
     r, err := zip.OpenReader(src)
     if err != nil {
