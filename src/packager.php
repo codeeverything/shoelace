@@ -3,7 +3,6 @@
 // `shoelace init --vagrant=basic-ubuntu --provision=[ansible|puppet|chef]/basic-lamp --editorconfig[=specific]`
 
 // let's hack this out
-print_r($_GET);
 $vagrant = $_GET['vagrant'];
 $provisioner = $_GET['provision'];
 $editorconfig = $_GET['editorconfig'];
@@ -14,15 +13,6 @@ $filename = "./build" . time() . rand(0, 1000) . ".zip";
 if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
     exit("cannot open <$filename>\n");
 }
-
-//$zip->addFromString("test1/testfilephp.txt" . time(), "#1 This is a test string added as testfilephp.txt.\n");
-//$zip->addFromString("test1/testfilephp2.txt" . time(), "#2 This is a test string added as testfilephp2.txt.\n");
-//$zip->addFromString("test2/testfilephp1.txt" . time(), "#2 This is a test string added as testfilephp2.txt.\n");
-//$zip->addFromString("testfilephp3.txt" . time(), "#2 This is a test string added as testfilephp2.txt.\n");
-////$zip->addFile($thisdir . "/too.php","/testfromfile.php");
-//echo "numfiles: " . $zip->numFiles . "\n";
-//echo "status:" . $zip->status . "\n";
-//$zip->close();
 
 $packageRoot = '../packages';
 
@@ -38,7 +28,7 @@ if ($vagrant) {
         $prov = explode('/', $provisioner);
         $system = $prov[0];
         $flavour = $prov[1];
-        echo "$system, $flavour";
+        //echo "$system, $flavour";
 
         $sourceDir .= 'provisioned/' . $vagrant;
     } else {
@@ -62,12 +52,18 @@ if (isset($editorconfig)) {
         $editorconfig = 'default/.editorconfig';
     }
 
-    var_dump($editorconfig);
+    //var_dump($editorconfig);
 
     addFilesToZip($packageRoot . '/editorconfig', '/', $zip);
 }
 
 $zip->close();
+
+header('Content-Type: application/zip');
+header('Content-Length: ' . filesize($filename));
+header('Content-Disposition: attachment; filename="package.zip"');
+readfile($filename);
+unlink($filename);
 
 /**
  * Given a source directory, recursively add all files (and sub dirs), to the ZIP
@@ -83,7 +79,7 @@ function addFilesToZip($src, $dest, &$zipfile) {
 
     while(false !== ( $file = readdir($dir)) ) {
         if (( $file != '.' ) && ( $file != '..' )) {
-            var_dump(is_dir($src . '/' . $file));
+            //var_dump(is_dir($src . '/' . $file));
             if ( is_dir($src . '/' . $file) ) {
                 addFilesToZip($src . '/' . $file, $dest . '/' . $file, $zipfile);
             }
@@ -92,7 +88,7 @@ function addFilesToZip($src, $dest, &$zipfile) {
                     $dest = '';
                 }
 
-                echo "adding $src/$file to project/$dest/$file<br/>";
+                //echo "adding $src/$file to project/$dest/$file<br/>";
 
                 if ($dest) {
                     $zipfile->addFile($src . "/$file", "$dest/$file");
