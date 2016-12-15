@@ -31,7 +31,8 @@ Let's start with an example that will generate everything we need to add:
 The `init` command is the only one currently available and takes the following (optional) arguments:
 - `--vagrant`: The name of the Vagrant machine to use
 - `--provision`: A string with format `PROVISIONER/CONFIG`, for example `ansible/basic-lamp`. This tells Shoelace to get the Vagrant machine above which is configured to provision with the provisioner and give that provisioner the config to achieve the setup you need.
-- `--editorconfig`: Currently a boolean flag. If included a sensible `.editorconfig` file will be included
+- `--editorconfig`: Currently a boolean flag. If included a sensible `.editorconfig` file will be included#
+- `--git`: Currently a boolean flag. If included a sensible set of example `.gitignore` and `.gitattributes` files will be included in the package. To make use of these be sure to remove the extension from the file(s).
 
 Let's try another example:
 
@@ -46,6 +47,10 @@ Perhaps we don't need any VM for this project, but we do want a shared Editor Co
 `shoelace init --provision=ansible/basic-lamp --editorconfig`
 
 Here we don't have a VM again, but do include the editor config and provisioning scripts for use against whatever infrastructure the project will use.
+
+#### File location
+
+Where a file from a package ends up depends on where it needs to be to do it's job. For example, `Vagrantfile`(s) will find themselves in the project root (or whereever you ran the `shoelace init` from), as will `.editorconfig` and Git files. Ansible playbooks and their configuration, however, will be placed in the `.shoelace` directory off your project root (again, whereever you ran `shoelace init` from). These files are referenced by other tools and can be more hidden away.
 
 ### Hosting packages and customisation
 

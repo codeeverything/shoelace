@@ -17,6 +17,7 @@ func main() {
     var vagrant string
     var provision string
     var editorconfig bool
+    var git bool
 
     // read in the source server (i.e. where to get packages from). Expect to be in an environment variable
     var sourceServer string
@@ -53,13 +54,18 @@ func main() {
                     Usage: "Whether to include the .editorconfig or not",
                     Destination: &editorconfig,
                 },
+                cli.BoolFlag{
+                    Name:  "git",
+                    Usage: "Whether to include sample .gitignore and .gitattributes files or not",
+                    Destination: &git,
+                },
             },
             // define tha actual work to do when "init" is used
             Action:  func(c *cli.Context) error {
                 var url string;
 
                 // build the URL to the package server and pass arguments
-                url = fmt.Sprintf("%spackager.php?vagrant=%s&provision=%s&editorconfig=%t", sourceServer, vagrant, provision, editorconfig)
+                url = fmt.Sprintf("%spackager.php?vagrant=%s&provision=%s&editorconfig=%t&git=%t", sourceServer, vagrant, provision, editorconfig, git)
                 fmt.Println(url)
 
                 // make the HTTP request to the URL (just an HTTP GET request)
@@ -85,7 +91,7 @@ func main() {
                     io.Copy(out, response.Body)
 
                     // unzip the file we got into the current directory
-                    status := Unzip("filename.zip", "")
+                    Unzip("filename.zip", "")
                 }
 
                 return nil

@@ -7,6 +7,7 @@
 $vagrant = $_GET['vagrant'];
 $provisioner = $_GET['provision'];
 $editorconfig = $_GET['editorconfig'];
+$git = $_GET['git'];
 
 $zip = new ZipArchive();
 $filename = "./build" . time() . rand(0, 1000) . ".zip";
@@ -70,6 +71,10 @@ if ($editorconfig == 'true') {
     //var_dump($editorconfig);
 
     addFilesToZip($packageRoot . '/editorconfig', '/', $zip);
+}
+
+if ($git == 'true') {
+    addFilesToZip($packageRoot . '/git', '/', $zip);
 }
 
 $zip->close();
