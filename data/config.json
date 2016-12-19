@@ -1,0 +1,28 @@
+{
+    "packages": {
+        "ansible/common-lmp": {
+            "environment": {
+                "vagrant": {
+                    "pull": [
+                        "ansible/vagrant-local"
+                    ]
+                }
+            },
+            "env": {
+                "prod": {
+                    "pull": ["ansible/security"]
+                }
+            },
+            "source": "http://shoelace.yourdomain.com"
+        },
+        "ansible/basic-lamp": {
+            "extends": ["ansible/common-lmp"]
+        },
+        "ansible/basic-lemp": {
+            "extends": ["ansible/common-lmp"]
+        }
+    },
+    "mapping": {
+        "ubuntu-trusty": "14.04"
+    }
+}
