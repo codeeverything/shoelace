@@ -1,0 +1,4 @@
+---
+  - name: Install Jekyll
+    become: yes
+    command: gem install jekyll

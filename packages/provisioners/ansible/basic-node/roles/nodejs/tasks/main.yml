@@ -1,0 +1,15 @@
+---
+- name: Update apt cache.
+  apt: update_cache=yes
+
+- name: Install NodeJS
+  sudo: yes
+  apt: pkg=nodejs state=latest
+
+- name: Install NPM
+  sudo: yes
+  apt: pkg=npm state=latest
+
+- name: Install Build Essentials for NPM
+  sudo: yes
+  apt: pkg=build-essential state=latest

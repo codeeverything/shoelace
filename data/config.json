@@ -20,6 +20,11 @@
         },
         "ansible/basic-lemp": {
             "extends": ["ansible/common-lmp"]
+        },
+        "ansible/basic-node": {
+        },
+        "ansible/basic-jekyll": {
+            "extends": ["ansible/basic-node"]
         }
     },
     "mapping": {
