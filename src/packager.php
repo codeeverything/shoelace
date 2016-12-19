@@ -95,7 +95,7 @@ if ($canProvision) {
 
 
         if ($prov) {
-            $sourceDir = $packageRoot . "/$system/$flavour";
+            $sourceDir = $packageRoot . "/provisioners/$system/$flavour";
             echo $sourceDir;
             var_dump(file_exists($sourceDir));
             if (file_exists($sourceDir)) {
