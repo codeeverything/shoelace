@@ -127,6 +127,7 @@ if ($github == 'true') {
 addFilesToZip($packageRoot . '/README', '/', $zip);
 
 $zip->close();
+//die();
 
 // clear any debug output before we push the ZIP file
 ob_clean();
@@ -206,10 +207,20 @@ function processFromConfig($configKey, &$zip, &$returnConfig = []) {
 
     $returnConfig[] = $configKey;
 
+    // if we're extending anything then get those configs as well
     if (array_key_exists('extends', $config)) {
         // process the dependency
         foreach ($config['extends'] as $extConfig) {
             processFromConfig($extConfig, $zip, $returnConfig);
+        }
+    }
+
+    // check the environment and pull anything that needs
+    if (array_key_exists('environment', $config)) {
+        if (array_key_exists('vagrant', $config['environment'])) {
+            foreach ($config['environment']['vagrant']['pull'] as $moarConfig) {
+                processFromConfig($moarConfig, $zip, $returnConfig);
+            }
         }
     }
 
