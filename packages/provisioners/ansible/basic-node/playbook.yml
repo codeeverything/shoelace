@@ -5,3 +5,5 @@
     - vars/all.yml
   roles:
     - nodejs
+    - ruby
+    - jekyll
