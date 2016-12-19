@@ -30,6 +30,10 @@ $editorconfig = $_GET['editorconfig'];
 $git = $_GET['git'];
 $github = $_GET['github'];
 
+// read in config
+$globalConfig = json_decode(file_get_contents('../data/config.json'), true);
+
+
 $zip = new ZipArchive();
 $filename = "./build" . time() . rand(0, 1000) . ".zip";
 
@@ -37,15 +41,26 @@ if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
     exit("cannot open <$filename>\n");
 }
 
+$dependencies = processFromConfig($provisioner, $zip);
+$dependencies = array_reverse($dependencies);
+var_dump($dependencies);
+//die();
+
+
 $packageRoot = '../packages';
 
 $canProvision = false;
 if ($vagrant) {
+    // get and do something with a defined config
+    $config = getConfig($vagrant);
 
     $sourceDir = $packageRoot . '/vagrant/';
     $destDir = '';
 
     if ($provisioner) {
+        // get and do something with a defined config
+        $config = getConfig($provisioner);
+
         $prov = explode('/', $provisioner);
         $system = $prov[0];
         $flavour = $prov[1];
@@ -57,8 +72,8 @@ if ($vagrant) {
         $sourceDir .= 'basic/' . $vagrant;
     }
 
-    //echo $sourceDir;
-    //var_dump(file_exists($sourceDir));
+    echo $sourceDir;
+    var_dump(file_exists($sourceDir));
     //die();
 
     if (file_exists($sourceDir)) {
@@ -70,23 +85,29 @@ if ($vagrant) {
     }
 }
 
+var_dump($canProvision);
 if ($canProvision) {
-    $prov = explode('/', $provisioner);
-    $system = $prov[0];
-    $flavour = $prov[1];
+    foreach ($dependencies as $provisioner) {
+        echo $provisioner;
+        $prov = explode('/', $provisioner);
+        $system = $prov[0];
+        $flavour = $prov[1];
 
 
-    if ($prov) {
-        $sourceDir = $packageRoot . "/$system/$flavour";
-        if (file_exists($sourceDir)) {
-            addFilesToZip($sourceDir, '.shoelace/' . $system, $zip);
+        if ($prov) {
+            $sourceDir = $packageRoot . "/$system/$flavour";
+            echo $sourceDir;
+            var_dump(file_exists($sourceDir));
+            if (file_exists($sourceDir)) {
+                addFilesToZip($sourceDir, '.shoelace/' . $system, $zip);
+            }
         }
     }
 }
 
 if ($editorconfig == 'true') {
     //if ($editorconfig == '') {
-        $editorconfig = 'default/.editorconfig';
+    $editorconfig = 'default/.editorconfig';
     //}
 
     //var_dump($editorconfig);
@@ -106,6 +127,9 @@ if ($github == 'true') {
 addFilesToZip($packageRoot . '/README', '/', $zip);
 
 $zip->close();
+
+// clear any debug output before we push the ZIP file
+ob_clean();
 
 header('Content-Type: application/zip');
 header('Content-Length: ' . filesize($filename));
@@ -149,4 +173,45 @@ function addFilesToZip($src, $dest, &$zipfile) {
         }
     }
     closedir($dir);
+}
+
+/**
+ * Read a config for key from the global config (if any match)
+ *
+ * @param $key
+ * @return null
+ */
+function getConfig($key) {
+    global $globalConfig;
+
+    if (array_key_exists($key, $globalConfig)) {
+        return $globalConfig['packages'][$key];
+    }
+
+    // should this be an error? or can we try to handle and then error if that fails?
+    return null;
+}
+
+/**
+ * Given a config array process this and add files to the zip file
+ *
+ * @param $config
+ * @param $zip
+ */
+function processFromConfig($configKey, &$zip, &$returnConfig = []) {
+    global $globalConfig;
+    print_r($configKey);
+
+    $config = $globalConfig['packages'][$configKey];
+
+    $returnConfig[] = $configKey;
+
+    if (array_key_exists('extends', $config)) {
+        // process the dependency
+        foreach ($config['extends'] as $extConfig) {
+            processFromConfig($extConfig, $zip, $returnConfig);
+        }
+    }
+
+    return $returnConfig;
 }

@@ -38,3 +38,7 @@ OR
   - pass this with the request to get a package for the project
   - If a package has the same name as a default one then check if there is an "conflict" property set. Could be "overwrite" or "extend"
   - This means you could make custom versions of packages...?
+- write the arguments that were given to a shoelace.json file
+  - idea is that we can use these when running shoelace init again
+  - or, for deployment to some EC2 instance we can use the same provisioning scripts?
+- `shoelace deploy --save` (--save tells us to use the same instance next time we deploy rather than spinning up another one) `--new` (force a new instance to be used, kill old one?)
