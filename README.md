@@ -17,7 +17,7 @@ Provisioners are installed to and run on the VM, so you don't need these locally
 
 Download the command line tool for either Windows or Mac and place it in a path that's globally accesible from your terminal (add it if you need to).
 
-Set a new environment variable of `SHOELACE_SERVER` and set this to `http://shoelace.codeeverything.com/src/` - this is the default package server, you can host your own if you like (see below).
+**Optionally** set a new environment variable of `SHOELACE_SERVER` (if unset a default of `http://shoelace.codeeverything.com/build` is assumed), if you intend to host your own version of Shoelace (see below).
 
 ### Initialising a project
 
@@ -61,7 +61,7 @@ You can host packages and extend the default offering to include your own config
 - Forking the Shoelace repo
 - Cloning this to your own server in a web servable directory
   - This must be running PHP 5 for the packager to work
-- Have devs. change their `SHOELACE_SERVER` environment variable to point at your server. This should include enough of a path to resolve `/packager.php`
+- Have devs. change their `SHOELACE_SERVER` environment variable to point at your server. This should end with `/build`.
 
 ### Notes
 

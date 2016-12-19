@@ -26,8 +26,8 @@ func main() {
 
     // if we don't have a server then error and bail
     if sourceServer == "" {
-        fmt.Println("No SHOELACE_SERVER environment variable found, please add one and run shoelace again")
-        return
+        fmt.Println("No SHOELACE_SERVER environment variable found. Using default of http://shoelace.codeeverything.com")
+        sourceServer = "http://shoelace.codeeverything.com"
     }
 
     // create a new CLI app
@@ -73,7 +73,7 @@ func main() {
                 var url string;
 
                 // build the URL to the package server and pass arguments
-                url = fmt.Sprintf("%spackager.php?vagrant=%s&provision=%s&editorconfig=%t&git=%t&github=%t", sourceServer, vagrant, provision, editorconfig, git, github)
+                url = fmt.Sprintf("%s?vagrant=%s&provision=%s&editorconfig=%t&git=%t&github=%t", sourceServer, vagrant, provision, editorconfig, git, github)
                 fmt.Println(url)
 
                 // make the HTTP request to the URL (just an HTTP GET request)
