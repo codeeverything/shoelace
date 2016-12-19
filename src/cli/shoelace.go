@@ -32,7 +32,7 @@ func main() {
 
     // create a new CLI app
     app := cli.NewApp()
-    app.Version = "0.3.0"
+    app.Version = "0.3.1"
     app.Name = "Shoelace - Project environment initialisation for cool dudes :)"
 
     // add command(s) to the CLI app
